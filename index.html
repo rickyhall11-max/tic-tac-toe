@@ -11,28 +11,37 @@
     <header>
       <div class="badge">Antigravity &times; VS Code Demo</div>
       <h1>Tic-Tac-Toe</h1>
-      <p class="subtitle">A sleek modern implementation built with Antigravity</p>
+      <p class="subtitle">Custom Photo Edition &bull; Powered by Antigravity</p>
     </header>
 
     <div class="game-card">
       <div class="scoreboard">
         <div class="score-item" id="score-x">
-          <span class="player-tag">Player X</span>
+          <div class="score-header">
+            <img src="player-x.png" alt="Player X" class="score-avatar avatar-x">
+            <span class="player-tag">Player X</span>
+          </div>
           <span class="score-val" id="val-x">0</span>
         </div>
         <div class="score-item" id="score-ties">
-          <span class="player-tag">Ties</span>
+          <div class="score-header">
+            <span class="ties-icon">🤝</span>
+            <span class="player-tag">Ties</span>
+          </div>
           <span class="score-val" id="val-ties">0</span>
         </div>
         <div class="score-item" id="score-o">
-          <span class="player-tag">Player O</span>
+          <div class="score-header">
+            <img src="player-o.png" alt="Player O" class="score-avatar avatar-o">
+            <span class="player-tag">Player O</span>
+          </div>
           <span class="score-val" id="val-o">0</span>
         </div>
       </div>
 
       <div class="status-bar">
         <div class="turn-indicator" id="turn-indicator">
-          Player <span id="current-player" class="player-x">X</span>'s Turn
+          Turn: <span id="current-player" class="player-x"></span>
         </div>
         <div class="mode-select">
           <button class="mode-btn active" id="mode-pvp" title="Two Players">2P Local</button>
@@ -79,4 +88,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-

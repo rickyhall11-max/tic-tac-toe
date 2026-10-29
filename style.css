@@ -7,11 +7,11 @@
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --color-x: #38bdf8;
-  --color-x-glow: rgba(56, 189, 248, 0.35);
+  --color-x-glow: rgba(56, 189, 248, 0.45);
   --color-o: #f43f5e;
-  --color-o-glow: rgba(244, 63, 94, 0.35);
+  --color-o-glow: rgba(244, 63, 94, 0.45);
   --color-win: #10b981;
-  --color-win-glow: rgba(16, 185, 129, 0.4);
+  --color-win-glow: rgba(16, 185, 129, 0.5);
   --accent-btn: #6366f1;
   --accent-btn-hover: #4f46e5;
   --radius-lg: 20px;
@@ -113,8 +113,36 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.score-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.score-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid transparent;
+}
+
+.score-avatar.avatar-x {
+  border-color: var(--color-x);
+  box-shadow: 0 0 8px var(--color-x-glow);
+}
+
+.score-avatar.avatar-o {
+  border-color: var(--color-o);
+  box-shadow: 0 0 8px var(--color-o-glow);
+}
+
+.ties-icon {
+  font-size: 0.95rem;
 }
 
 .player-tag {
@@ -142,24 +170,44 @@ h1 {
 }
 
 .turn-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-muted);
 }
 
 #current-player {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1rem;
+}
+
+.indicator-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid transparent;
 }
 
 .player-x {
   color: var(--color-x);
-  text-shadow: 0 0 12px var(--color-x-glow);
+}
+.player-x .indicator-avatar {
+  border-color: var(--color-x);
+  box-shadow: 0 0 10px var(--color-x-glow);
 }
 
 .player-o {
   color: var(--color-o);
-  text-shadow: 0 0 12px var(--color-o-glow);
+}
+.player-o .indicator-avatar {
+  border-color: var(--color-o);
+  box-shadow: 0 0 10px var(--color-o-glow);
 }
 
 .mode-select {
@@ -201,15 +249,16 @@ h1 {
   background: var(--cell-bg);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-md);
-  font-size: 3rem;
-  font-weight: 800;
+  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   outline: none;
-  transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s, border-color 0.2s;
   user-select: none;
+  position: relative;
+  overflow: hidden;
 }
 
 .cell:hover:not(:disabled) {
@@ -226,33 +275,49 @@ h1 {
   border-color: #a5b4fc;
 }
 
-.cell.x {
-  color: var(--color-x);
-  text-shadow: 0 0 20px var(--color-x-glow);
-  animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+/* Photo Tokens inside board cells */
+.cell-token {
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  object-fit: cover;
+  pointer-events: none;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  border: 3px solid transparent;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.cell.o {
-  color: var(--color-o);
-  text-shadow: 0 0 20px var(--color-o-glow);
-  animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+.cell.x .cell-token {
+  border-color: var(--color-x);
+  box-shadow: 0 0 18px var(--color-x-glow);
+}
+
+.cell.o .cell-token {
+  border-color: var(--color-o);
+  box-shadow: 0 0 18px var(--color-o-glow);
 }
 
 .cell.winning {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.22);
   border-color: var(--color-win);
   box-shadow: 0 0 20px var(--color-win-glow);
   animation: pulseWin 1s infinite alternate;
 }
 
+.cell.winning .cell-token {
+  border-color: var(--color-win);
+  box-shadow: 0 0 20px var(--color-win-glow);
+}
+
 @keyframes popIn {
-  0% { transform: scale(0.6); opacity: 0; }
+  0% { transform: scale(0.3); opacity: 0; }
+  70% { transform: scale(1.08); opacity: 1; }
   100% { transform: scale(1); opacity: 1; }
 }
 
 @keyframes pulseWin {
   0% { transform: scale(1); }
-  100% { transform: scale(1.04); }
+  100% { transform: scale(1.03); }
 }
 
 /* Actions */
@@ -342,8 +407,20 @@ h1 {
 }
 
 .modal-icon {
-  font-size: 3rem;
   margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-winner-avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--accent-btn);
+  box-shadow: 0 0 24px rgba(99, 102, 241, 0.6);
+  animation: pulseWin 1.2s infinite alternate;
 }
 
 .modal h2 {
@@ -367,4 +444,3 @@ footer {
   color: var(--text-muted);
   text-align: center;
 }
-

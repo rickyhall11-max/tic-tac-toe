@@ -123,6 +123,12 @@ function launchConfetti() {
   render();
 }
 
+// --- Player Image Assets ---
+const PLAYER_IMAGES = {
+  X: 'player-x.png',
+  O: 'player-o.png'
+};
+
 // --- Game Logic ---
 const WINNING_COMBOS = [
   [0, 1, 2],
@@ -187,12 +193,17 @@ function updateScoreboard() {
 }
 
 function setTurnIndicator(player) {
-  currentPlayerEl.textContent = player;
   currentPlayerEl.className = player === 'X' ? 'player-x' : 'player-o';
+  currentPlayerEl.innerHTML = `
+    <img src="${PLAYER_IMAGES[player]}" alt="${player}" class="indicator-avatar">
+    Player ${player}
+  `;
 }
 
 function handleCellClick(e) {
-  const index = parseInt(e.target.dataset.index, 10);
+  const cell = e.target.closest('.cell');
+  if (!cell) return;
+  const index = parseInt(cell.dataset.index, 10);
   if (!state.gameActive || state.board[index] !== null) return;
 
   makeMove(index, state.currentPlayer);
@@ -212,7 +223,10 @@ function handleCellClick(e) {
 function makeMove(index, player) {
   state.board[index] = player;
   const cell = cells[index];
-  cell.textContent = player;
+  
+  cell.innerHTML = `
+    <img src="${PLAYER_IMAGES[player]}" alt="Player ${player}" class="cell-token">
+  `;
   cell.classList.add(player.toLowerCase());
   cell.disabled = true;
 
@@ -254,11 +268,13 @@ function handleWin(winner, combo) {
   launchConfetti();
 
   setTimeout(() => {
-    modalIcon.textContent = winner === 'X' ? '⚡' : '🔥';
+    modalIcon.innerHTML = `
+      <img src="${PLAYER_IMAGES[winner]}" alt="Winner ${winner}" class="modal-winner-avatar">
+    `;
     modalTitle.textContent = `Player ${winner} Wins!`;
     modalMessage.textContent = state.mode === 'ai' && winner === 'O' 
       ? 'The AI outsmarted you this round! Try again?'
-      : 'Masterful play! Ready to defend the crown?';
+      : 'Masterful play! Ready for the next round?';
     modalBackdrop.classList.add('show');
   }, 450);
 }
@@ -272,7 +288,7 @@ function handleTie() {
   playSound('tie');
 
   setTimeout(() => {
-    modalIcon.textContent = '🤝';
+    modalIcon.innerHTML = '<span style="font-size: 3rem;">🤝</span>';
     modalTitle.textContent = "It's a Draw!";
     modalMessage.textContent = 'Both sides matched evenly. Next game decides!';
     modalBackdrop.classList.add('show');
@@ -357,7 +373,7 @@ function resetMatch() {
   setTurnIndicator('X');
 
   cells.forEach(cell => {
-    cell.textContent = '';
+    cell.innerHTML = '';
     cell.className = 'cell';
     cell.disabled = false;
   });
@@ -404,4 +420,4 @@ modalBackdrop.addEventListener('click', (e) => {
 
 // Initialize
 loadScores();
-
+setTurnIndicator('X');
